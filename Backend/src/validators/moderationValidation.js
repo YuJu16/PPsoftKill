@@ -10,7 +10,7 @@ const validStatus = {
     REJECTED: "rejected"
 };
 
-const ModerateDealValidation = [
+const ModeratePostValidation = [
     body("status").
     notEmpty().withMessage("status required")
     .isString().withMessage("type must be a string")
@@ -26,6 +26,6 @@ const ModerateUsersValidation =[
 
 
 module.exports = {
-    ModerateDealValidation,
+    ModeratePostValidation,
     ModerateUsersValidation
 };

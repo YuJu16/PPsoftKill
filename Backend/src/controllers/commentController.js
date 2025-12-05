@@ -1,5 +1,5 @@
 const Comment = require('../models/commentModel');
-const {Deal} = require('../models/dealModel');
+const {Post} = require('../models/postModel');
 const {AppError} = require('../utils/error');
 const mongoose = require('mongoose');
 
@@ -17,10 +17,10 @@ const ROLES = {
  * @returns 
  */
 const GetCommentsController = async (req, res) =>{
-    if(!mongoose.Types.ObjectId.isValid(req.params.dealId)){
-        throw new AppError("invalid dealId format",400);
+    if(!mongoose.Types.ObjectId.isValid(req.params.postId)){
+        throw new AppError("invalid postId format",400);
     }
-    const comments = await Comment.find({dealId:req.params.dealId}).populate('authorId','username -_id' ).exec();
+    const comments = await Comment.find({postId:req.params.postId}).populate('authorId','username -_id' ).exec();
     if(!comments){
         throw new AppError("can't process comments",500);
     }
@@ -46,15 +46,15 @@ const AddCommentController = async (req, res) =>{
     if(!user){
         throw new AppError("user not found", 403);
     }
-    if(!mongoose.Types.ObjectId.isValid(req.params.dealId)){
-        throw new AppError("invalid dealId format",400);
+    if(!mongoose.Types.ObjectId.isValid(req.params.postId)){
+        throw new AppError("invalid postId format",400);
     }
 
     const {content} = req.body;
 
     const comment = new Comment({
         content:content,
-        dealId:req.params.dealId,
+        postId:req.params.postId,
         authorId: user._id
     });
 
@@ -83,7 +83,7 @@ const ModifyCommentController = async (req, res)=>{
         throw new AppError("user not found ", 403);
     }
     if(!mongoose.Types.ObjectId.isValid(req.params.id)){
-        throw new AppError("invalid dealId format",400);
+        throw new AppError("invalid comment id format",400);
     }
 
     const comment = await Comment.findById(req.params.id).populate('authorId', 'username -_id');
@@ -125,7 +125,7 @@ const DeleteCommentController = async(req,res) =>{
     }
 
     if(!mongoose.Types.ObjectId.isValid(req.params.id)){
-        throw new AppError("invalid dealId format",400);
+        throw new AppError("invalid comment id format",400);
     }
 
     const comment = await Comment.findById(req.params.id);

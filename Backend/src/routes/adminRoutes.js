@@ -3,11 +3,11 @@ const router = express.Router();
 const {validate} = require('../utils/validate');
 const {authenticateUser, requireAnyRole} = require('../middlewares/authMiddleware');
 const {asyncHandler} = require('../utils/error');
-const { GetPendingDealsController, ModerateDealController } = require("../controllers/dealController");
-const { ModerateDealValidation, ModerateUsersValidation } = require("../validators/moderationValidation");
+const { GetPendingPostsController, ModeratePostController } = require("../controllers/postController");
+const { ModeratePostValidation, ModerateUsersValidation } = require("../validators/moderationValidation");
 const { GetUsersWithPaginationController, ModifyUserRoleController } = require("../controllers/userController");
-router.get("/deals/pending",asyncHandler(authenticateUser), requireAnyRole(['admin', 'moderator']),asyncHandler(GetPendingDealsController));
-router.patch("/deals/:id/moderate", asyncHandler(authenticateUser), requireAnyRole(['admin', 'moderator']),ModerateDealValidation,validate,asyncHandler(ModerateDealController));
+router.get("/posts/pending",asyncHandler(authenticateUser), requireAnyRole(['admin', 'moderator']),asyncHandler(GetPendingPostsController));
+router.patch("/posts/:id/moderate", asyncHandler(authenticateUser), requireAnyRole(['admin', 'moderator']),ModeratePostValidation,validate,asyncHandler(ModeratePostController));
 
 
 

@@ -1,5 +1,5 @@
 const {Vote,VOTE_TYPES} = require('../models/voteModel');
-const {Deal} = require('../models/dealModel');
+const {Post} = require('../models/postModel');
 const mongoose = require("mongoose");
 const {AppError} = require('../utils/error');
 
@@ -18,20 +18,20 @@ const VoteController = async (req,res) =>{
     if(!mongoose.Types.ObjectId.isValid(req.params.id)){
         throw new AppError("invalid id format", 400);
     }
-    const deal = await Deal.findById(req.params.id);
-    if (!deal){
-        throw new AppError("Deal not found",404);
+    const post = await Post.findById(req.params.id);
+    if (!post){
+        throw new AppError("Post not found",404);
     }
 
     const {type} = req.body;
     
-    const vote = await Vote.findOne({userId : user._id, dealId : deal._id}).populate("userId").populate('dealId').exec();
+    const vote = await Vote.findOne({userId : user._id, postId : post._id}).populate("userId").populate('postId').exec();
     if(vote){
 
         if(type == VOTE_TYPES.HOT && vote.type != VOTE_TYPES.HOT){
-        deal.temperature++;
+        post.temperature++;
         }else if (type == VOTE_TYPES.COLD && vote.type != VOTE_TYPES.COLD){
-            deal.temperature--;
+            post.temperature--;
         }
 
         vote.type = type;
@@ -39,10 +39,10 @@ const VoteController = async (req,res) =>{
 
         
 
-        await deal.save();
+        await post.save();
         await vote.save();
 
-        await vote.populate('userId dealId');
+        await vote.populate('userId postId');
 
 
         return res.status(200).json({
@@ -54,22 +54,22 @@ const VoteController = async (req,res) =>{
 
     const newVote = new Vote({
         userId : user._id,
-        dealId : deal._id,
+        postId : post._id,
         type:type,
     });
 
 
     if(type == VOTE_TYPES.HOT){
-        deal.temperature++;
+        post.temperature++;
     }else{
-        deal.temperature--;
+        post.temperature--;
     }
 
-    await deal.save();
+    await post.save();
 
     await newVote.save();
 
-    await newVote.populate("userId dealId");
+    await newVote.populate("userId postId");
     
 
 
@@ -98,23 +98,23 @@ const RemoveVote = async (req, res) =>{
     if(!mongoose.Types.ObjectId.isValid(req.params.id)){
         throw new AppError("invalid id format", 400);
     }
-    const deal = await Deal.findById(req.params.id);
-    if (!deal){
-        throw new AppError("Deal not found",404);
+    const post = await Post.findById(req.params.id);
+    if (!post){
+        throw new AppError("Post not found",404);
     }
-    const vote = await Vote.findOne({userId :user._id, dealId: deal._id});
+    const vote = await Vote.findOne({userId :user._id, postId: post._id});
     if(!vote){
         throw new AppError("vote not found",404);
     }
 
     if(vote.type == VOTE_TYPES.COLD){
-        deal.temperature ++;
+        post.temperature ++;
     }else{
-        deal.temperature--;
+        post.temperature--;
     }
 
     await vote.deleteOne();
-    await deal.save();
+    await post.save();
 
     return res.status(200).json({
         success:true,

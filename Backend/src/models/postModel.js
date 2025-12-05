@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 
-const DEAL_STATUS = {
+const POST_STATUS = {
     PENDING: "pending",
     APPROVED: "approved",
     REJECTED: "rejected"
 }
 
-const DEAL_CATEGORIES = {
+const POST_CATEGORIES = {
     HIGH_TECH : "High-Tech",
     HOME:"Maison",
     FASHION : "Mode",
@@ -16,7 +16,7 @@ const DEAL_CATEGORIES = {
     OTHER:"Autre"
 }
 
-const dealSchema = new mongoose.Schema({
+const postSchema = new mongoose.Schema({
     title:{
         type:String,
         required: true,
@@ -46,22 +46,27 @@ const dealSchema = new mongoose.Schema({
         trim:true,
         maxlength:2048
     },
+    image:{
+        type:String,
+        trim:true,
+        default: null
+    },
     category:{
         type:String,
         trim:true,
         required:true,
-        enum:Object.values(DEAL_CATEGORIES),
-        default:DEAL_CATEGORIES.OTHER,
+        enum:Object.values(POST_CATEGORIES),
+        default:POST_CATEGORIES.OTHER,
     },
     status:{
         type: String,
-        enum:Object.values(DEAL_STATUS),
+        enum:Object.values(POST_STATUS),
         required:true,
-        default: DEAL_STATUS.PENDING,
+        default: POST_STATUS.PENDING,
     },
     temperature:{
         type: Number,
-        requireed : true,
+        required: true,
         default: 0,
     },
     authorId:{
@@ -71,10 +76,11 @@ const dealSchema = new mongoose.Schema({
     }
 },{timestamps:true});
 
-//dealSchema.index({title:'text', description:'text'});
-const Deal = mongoose.model('Deal', dealSchema);
+//postSchema.index({title:'text', description:'text'});
+const Post = mongoose.model('Post', postSchema);
 module.exports = {
-    DEAL_STATUS,
-    DEAL_CATEGORIES,
-    Deal
+    POST_STATUS,
+    POST_CATEGORIES,
+    Post
 }
+

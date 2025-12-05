@@ -9,10 +9,10 @@ const commentSchema = new mongoose.Schema({
         minlength:3,
         maxlength:350,
     },
-    dealId:{
+    postId:{
         type:ObjectId,
         required:true,
-        ref:"Deal"
+        ref:"Post"
     },
     authorId:{
         type:ObjectId,

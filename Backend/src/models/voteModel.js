@@ -17,9 +17,9 @@ const voteSchema = new mongoose.Schema({
         ref:"User",
         required:true,
     },
-    dealId:{
+    postId:{
         type:ObjectId,
-        ref:"Deal",
+        ref:"Post",
         required:true,
     }
 },{timestamps:true});
