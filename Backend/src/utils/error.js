@@ -1,0 +1,30 @@
+
+class AppError extends Error {
+  constructor(message, statusCode = 500) {
+    super(message);
+    this.statusCode = statusCode;
+    this.timestamp = new Date().toISOString();
+  }
+}
+
+
+class ValidationError extends AppError {
+  constructor(message, errors = []) {
+    super(message, 400);
+    this.errors = errors;
+    this.isValidationError = true;
+  }
+}
+
+
+const asyncHandler = (fn) => {
+  return (req, res, next) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
+};
+
+module.exports = {
+  AppError,
+  ValidationError,
+  asyncHandler
+};
